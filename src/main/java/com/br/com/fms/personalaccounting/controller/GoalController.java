@@ -1,7 +1,7 @@
 package com.br.com.fms.personalaccounting.controller;
 
-import com.br.com.fms.personalaccounting.model.Account;
-import com.br.com.fms.personalaccounting.service.AccoutingService;
+import com.br.com.fms.personalaccounting.model.Goal;
+import com.br.com.fms.personalaccounting.service.GoalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,40 +10,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/accounts")
-public class AccountingController {
+@RequestMapping(value = "/goals")
+public class GoalController {
 
     @Autowired
-    AccoutingService accoutingService;
+    GoalService goalService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Account create(@RequestBody Account account) {
-        return accoutingService.create(account);
+    public Goal create(@RequestBody Goal goal) {
+        return goalService.create(goal);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<Account> findAll() {
-        return accoutingService.findAll();
+    public List<Goal> findAll() {
+        return goalService.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Account findById(@PathVariable("id") String id) {
-        return accoutingService.findById(id);
+    public Goal findById(@PathVariable("id") String id) {
+        return goalService.findById(id);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Account update(@RequestBody Account account) {
-        return accoutingService.update(account);
+    public Goal update(@RequestBody Goal goal) {
+        return goalService.update(goal);
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("id") String id) {
-        accoutingService.delete(id);
+        goalService.delete(id);
     }
 
 }

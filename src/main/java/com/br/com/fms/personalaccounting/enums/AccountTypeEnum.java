@@ -1,9 +1,8 @@
 package com.br.com.fms.personalaccounting.enums;
 
 public enum AccountTypeEnum {
-
-    CONTA_CORRENTE("Conta Corrente"),
-    INVESTIMENTO("Investimento");
+    CURRENT_ACCOUNT("Conta Corrente"),
+    INVESTIMENT("Investimento");
 
     private String value;
 
