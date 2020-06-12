@@ -17,8 +17,11 @@ public class GoalServiceImpl implements GoalService {
     @Autowired
     private GoalRepository goalRepository;
 
+    private static final String GOAL_NOT_FOUND = "Goal not found";
+
     @Override
     public Goal create(Goal goal) {
+        goal.setId(null);
         return goalRepository.save(goal);
     }
 
@@ -29,22 +32,22 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public Goal findById(String id) {
-        Optional<Goal> goalEntity = goalRepository.findById(id);
+        Optional<Goal> entity = goalRepository.findById(id);
 
-        if (goalEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Goal not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, GOAL_NOT_FOUND);
         }
 
-        return goalEntity.get();
+        return entity.get();
     }
 
 
     @Override
     public Goal update(Goal goal) {
-        Optional<Goal> goalEntity = goalRepository.findById(goal.getId());
+        Optional<Goal> entity = goalRepository.findById(goal.getId());
 
-        if (goalEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Account not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, GOAL_NOT_FOUND);
         }
 
         return goalRepository.save(goal);
@@ -52,10 +55,12 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public void delete(String id) {
-        Optional<Goal> goal = goalRepository.findById(id);
+        Optional<Goal> entity = goalRepository.findById(id);
 
-        if (goal.isPresent()) {
-            goalRepository.delete(goal.get());
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, GOAL_NOT_FOUND);
         }
+
+        goalRepository.delete(entity.get());
     }
 }

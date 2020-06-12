@@ -13,18 +13,24 @@ import java.util.Optional;
 
 @Service
 public class IncomingServiceImpl implements IncomingService {
+
     @Autowired
     private IncomingRepository incomingRepository;
 
+    private static final String INCOMING_NOT_FOUND = "Incoming not found";
+
     @Override
     public Incoming create(Incoming incoming) {
-        Optional<Incoming> accountEntity = incomingRepository.findByYearAndMonth(incoming.getYear(), incoming.getMonth());
+        Optional<Incoming> optionalEntity = incomingRepository.findByYearAndMonth(incoming.getYear(), incoming.getMonth());
 
-        if (accountEntity.isPresent()) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Incoming already exists");
+        if (optionalEntity.isPresent()) {
+            Incoming entity = optionalEntity.get();
+            entity.getIncomes().addAll(incoming.getIncomes());
+            return incomingRepository.save(entity);
+        } else {
+            incoming.setId(null);
+            return incomingRepository.save(incoming);
         }
-
-        return incomingRepository.save(incoming);
     }
 
     @Override
@@ -34,43 +40,43 @@ public class IncomingServiceImpl implements IncomingService {
 
     @Override
     public Incoming findById(String id) {
-        Optional<Incoming> incomingEntity = incomingRepository.findById(id);
+        Optional<Incoming> entity = incomingRepository.findById(id);
 
-        if (incomingEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Incoming not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, INCOMING_NOT_FOUND);
         }
 
-        return incomingEntity.get();
+        return entity.get();
     }
 
     @Override
     public Incoming findByYearAndMonth(Integer year, Integer month) {
-        Optional<Incoming> incomingEntity = incomingRepository.findByYearAndMonth(year, month);
+        Optional<Incoming> entity = incomingRepository.findByYearAndMonth(year, month);
 
-        if (incomingEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Incoming not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, INCOMING_NOT_FOUND);
         }
 
-        return incomingEntity.get();
+        return entity.get();
     }
 
     @Override
     public List<Incoming> findByYear(Integer year) {
-        Optional<List<Incoming>> incomingEntity = incomingRepository.findByYear(year);
+        Optional<List<Incoming>> entity = incomingRepository.findByYear(year);
 
-        if (incomingEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Incoming not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, INCOMING_NOT_FOUND);
         }
 
-        return incomingEntity.get();
+        return entity.get();
     }
 
     @Override
     public Incoming update(Incoming incoming) {
-        Optional<Incoming> incomingEntity = incomingRepository.findById(incoming.getId());
+        Optional<Incoming> entity = incomingRepository.findById(incoming.getId());
 
-        if (incomingEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Incoming not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, INCOMING_NOT_FOUND);
         }
 
         return incomingRepository.save(incoming);
@@ -78,10 +84,13 @@ public class IncomingServiceImpl implements IncomingService {
 
     @Override
     public void delete(String id) {
-        Optional<Incoming> incoming = incomingRepository.findById(id);
+        Optional<Incoming> entity = incomingRepository.findById(id);
 
-        if (incoming.isPresent()) {
-            incomingRepository.delete(incoming.get());
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, INCOMING_NOT_FOUND);
         }
+
+        incomingRepository.delete(entity.get());
     }
+
 }

@@ -5,9 +5,9 @@ import com.br.com.fms.personalaccounting.model.Goal;
 import java.util.List;
 
 public interface GoalService {
-    Goal create(Goal account);
+    Goal create(Goal goal);
     List<Goal> findAll();
     Goal findById(String id);
-    Goal update(Goal account);
+    Goal update(Goal goal);
     void delete(String id);
 }

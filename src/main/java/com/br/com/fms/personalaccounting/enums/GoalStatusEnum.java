@@ -2,7 +2,7 @@ package com.br.com.fms.personalaccounting.enums;
 
 public enum GoalStatusEnum {
     PLANNED("Planejado"),
-    ATIVO("Ativo"),
+    ACTIVE("Ativo"),
     CONCLUDED("Concluído");
 
     private String value;

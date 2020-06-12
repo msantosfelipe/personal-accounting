@@ -14,5 +14,5 @@ public class Goal {
     private String description;
     private GoalTermEnum term;
     private GoalStatusEnum status;
-    private Integer priority;
+    private String expectedDate;
 }

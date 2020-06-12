@@ -17,13 +17,18 @@ public class AccountingServiceImpl implements AccoutingService {
     @Autowired
     private AccountRepository accountRepository;
 
+    private static final String ACCOUNT_ALREADY_EXISTS = "Account already exists";
+    private static final String ACCOUNT_NOT_FOUND = "Account not found";
+
     @Override
     public Account create(Account account) {
-        Optional<Account> accountEntity = accountRepository.findByName(account.getName());
+        Optional<Account> entity = accountRepository.findByName(account.getName());
 
-        if (accountEntity.isPresent()) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Account already exists");
+        if (entity.isPresent()) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, ACCOUNT_ALREADY_EXISTS);
         }
+
+        account.setId(null);
 
         return accountRepository.save(account);
     }
@@ -35,21 +40,21 @@ public class AccountingServiceImpl implements AccoutingService {
 
     @Override
     public Account findById(String id) {
-        Optional<Account> accountEntity = accountRepository.findById(id);
+        Optional<Account> entity = accountRepository.findById(id);
 
-        if (accountEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Account not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
         }
 
-        return accountEntity.get();
+        return entity.get();
     }
 
     @Override
     public Account update(Account account) {
-        Optional<Account> accountEntity = accountRepository.findById(account.getId());
+        Optional<Account> entity = accountRepository.findById(account.getId());
 
-        if (accountEntity.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Account not found");
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
         }
 
         return accountRepository.save(account);
@@ -57,10 +62,12 @@ public class AccountingServiceImpl implements AccoutingService {
 
     @Override
     public void delete(String id) {
-        Optional<Account> account = accountRepository.findById(id);
+        Optional<Account> entity = accountRepository.findById(id);
 
-        if (account.isPresent()) {
-            accountRepository.delete(account.get());
+        if (entity.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, ACCOUNT_NOT_FOUND);
         }
+
+        accountRepository.delete(entity.get());
     }
 }

@@ -8,19 +8,19 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-@Document(collection = "incoming")
-public class Incoming {
+@Document(collection = "spending")
+public class Spending {
     @Id
     private String id;
     private Integer year;
     private Integer month;
-    private List<Income> incomes;
-    private BigDecimal totalIncomingValue;
+    private List<Spend> spending;
+    private BigDecimal totalspendingValue;
 
-    public BigDecimal getTotalIncomingValue() {
-        if (this.incomes != null) {
+    public BigDecimal getTotalspendingValue() {
+        if (this.spending != null) {
             BigDecimal total = new BigDecimal(0);
-            return this.incomes.stream().map(i -> i.getValue()).reduce(BigDecimal.valueOf(0), BigDecimal::add);
+            return this.spending.stream().map(i -> i.getValue()).reduce(BigDecimal.valueOf(0), BigDecimal::add);
         }
 
         return new BigDecimal(0);
